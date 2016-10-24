@@ -1,0 +1,23 @@
+Will (to be done by Friday 10/28 evening):
+- Create initial C++ file
+- Add team member comment at top of file
+- Implement G with adjacency matrix
+- Implement BFS(G, v)
+- Implement function that will return the distance from any node to each other node
+
+Alex (to be done by Wednesday 11/02 evening):
+- Implement DistanceMatrix(G)
+- Implement Diameter(G)
+- Implement Components(G)
+
+John (to be done by Sunday 11/06 evening):
+- Improve main() function so that it prints:
+	- the adjacency matrix
+	- distance matrix
+	- diameter / connected components
+- Verify code correctness
+- Verify code cleanliness / comments
+- Generate two sample runs
+- Submit digital copy by November 6th
+- Print sample hard copy with sample runs
+- Bring hard copy to class on November 7th
