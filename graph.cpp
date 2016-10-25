@@ -38,7 +38,9 @@ struct graphMatrix
 //-------------------------//
 graphMatrix generateAdjacencyMatrix(int numNodes, vector<graphEdge> edges);
 
+vector<int> getNeighbors(int node, graphMatrix graphAdjacencyMatrix);
 vector<int> getDistancesUsingBfs(int node, graphMatrix graphAdjacencyMatrix);
+int getPathDistanceUsingBfs(int node1, int node2, graphMatrix graphAdjacencyMatrix);
 
 void printMatrix(graphMatrix matrix);
 void deleteMatrix(graphMatrix matrix);
@@ -98,6 +100,14 @@ int main(int argc, char* argv[])
 	graphMatrix adjacencyMatrix = generateAdjacencyMatrix(numberOfNodes, edges);	
 	printMatrix(adjacencyMatrix);
 	
+	vector<int> distances = getDistancesUsingBfs(4, adjacencyMatrix);
+	for (int ii = 0; ii < distances.size(); ii++)
+	{
+		cout << distances[ii] << " ";
+	}
+	cout << endl;
+	
+	cout << getPathDistanceUsingBfs(1, 3, adjacencyMatrix) << endl;;
 	
 	
 	deleteMatrix(adjacencyMatrix);
@@ -146,6 +156,72 @@ graphMatrix generateAdjacencyMatrix(int numNodes, vector<graphEdge> edges)
 	//printMatrix(adjacencyMatrix);
 	
 	return adjacencyMatrix;
+}
+
+vector<int> getNeighbors(int node, graphMatrix graphAdjacencyMatrix)
+{
+	vector<int>* matrixRowForNode = (*graphAdjacencyMatrix.matrix)[node];
+	
+	vector<int> neighbors;
+	for (int ii = 0; ii < matrixRowForNode->size(); ii++)
+	{
+		if ((*matrixRowForNode)[ii] == 1)
+		{
+			neighbors.push_back(ii);
+		}
+	}
+	return neighbors;
+}
+
+vector<int> getDistancesUsingBfs(int node, graphMatrix graphAdjacencyMatrix)
+{
+	// Initialize the distances vector
+	vector<int> distances;
+	for (int ii = 0; ii < graphAdjacencyMatrix.numberOfNodes; ii++)
+	{
+		// Assume we can't reach each node to start with
+		distances.push_back(-1);
+	}
+	// We're distance zero from ourself
+	distances[node] = 0;
+	
+	// Initialize the open list
+	queue<int> openList;
+	openList.push(node);
+	
+	// Start searching
+	while (openList.size() > 0)
+	{
+		// Remove the next node in the queue
+		int currentNode = openList.front();
+		openList.pop();
+		int currentDistance = distances[currentNode];
+				
+		// Loop throught this node's neighbors
+		vector<int> neighbors = getNeighbors(currentNode, graphAdjacencyMatrix);
+		for (int ii = 0; ii < neighbors.size(); ii++)
+		{
+			int neighbor = neighbors[ii];
+			
+			// Skip this neighbor if we've already visited it
+			if (distances[neighbor] != -1)
+			{
+				continue;
+			}
+			
+			// Set the distance this neighbor, then add it to the open list
+			distances[neighbor] = currentDistance + 1;
+			openList.push(neighbor);			
+		}
+	}
+	
+	return distances;
+}
+
+int getPathDistanceUsingBfs(int node1, int node2, graphMatrix graphAdjacencyMatrix)
+{
+	vector<int> node1Distances = getDistancesUsingBfs(node1, graphAdjacencyMatrix);
+	return node1Distances[node2];
 }
 
 void printMatrix(graphMatrix matrixToPrint)
