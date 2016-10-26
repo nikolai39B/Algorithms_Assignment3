@@ -42,8 +42,13 @@ vector<int> getNeighbors(int node, graphMatrix graphAdjacencyMatrix);
 vector<int> getDistancesUsingBfs(int node, graphMatrix graphAdjacencyMatrix);
 int getPathDistanceUsingBfs(int node1, int node2, graphMatrix graphAdjacencyMatrix);
 
+vector< vector<int>* >* generateDistanceMatrix(graphMatrix adjacencyMatrix);
+vector< vector<int>* >* getConnectedComponents (int numberOfNodes, vector< vector<int>* >* distanceMatrix);
+int graphDiameter(vector< vector<int>* >* distanceMatrix);
+
 void printMatrix(graphMatrix matrix);
 void deleteMatrix(graphMatrix matrix);
+void deleteMatrix(vector< vector<int>* >* matrix);
 
 
 //------//
@@ -99,18 +104,29 @@ int main(int argc, char* argv[])
 	
 	graphMatrix adjacencyMatrix = generateAdjacencyMatrix(numberOfNodes, edges);	
 	printMatrix(adjacencyMatrix);
+	cout << endl;
 	
-	vector<int> distances = getDistancesUsingBfs(4, adjacencyMatrix);
+	vector<int> distances = getDistancesUsingBfs(2, adjacencyMatrix);
+
+	cout << "distance from node 2: ";
 	for (int ii = 0; ii < distances.size(); ii++)
 	{
 		cout << distances[ii] << " ";
 	}
-	cout << endl;
+	cout << endl << endl;
 	
+	cout << "distance from node 1 to node 3: ";
 	cout << getPathDistanceUsingBfs(1, 3, adjacencyMatrix) << endl;;
 	
+	vector< vector<int>* >* distanceMatrix = generateDistanceMatrix(adjacencyMatrix);
+
+	cout << "Graph Diameter: " << graphDiameter(distanceMatrix) << endl;
+
+	vector< vector<int>* >* connectedComponents = getConnectedComponents(numberOfNodes, distanceMatrix);
 	
 	deleteMatrix(adjacencyMatrix);
+	deleteMatrix(distanceMatrix);
+	deleteMatrix(connectedComponents);
 	return 0;
 }
 
@@ -247,3 +263,122 @@ void deleteMatrix(graphMatrix matrixToDelete)
 	delete matrixToDelete.matrix;
 }
 
+vector< vector<int>* >* generateDistanceMatrix(graphMatrix adjacencyMatrix)
+{
+	vector< vector<int>* >* distanceMatrix = new vector< vector<int>* >();
+	cout << endl;
+	for (int row = 0 ; row < adjacencyMatrix.numberOfNodes ; row++)
+	{
+		//getDistancesUsingBfs makes each row of the distanceMatrix for us. just save return
+		vector<int> tempCurrentDistances = getDistancesUsingBfs(row, adjacencyMatrix);
+		vector<int>* currentDistances = new vector<int>();
+	
+		//deep copy tempCurrentDistances into currentDistances
+		for (int ii = 0; ii < tempCurrentDistances.size() ; ii++)
+		{	
+			currentDistances->push_back( tempCurrentDistances.at(ii) );
+		}
+		cout << endl;
+
+		//add currentDistances to dstanceMatrix
+		distanceMatrix->push_back(currentDistances);
+	}
+
+	cout << "distanceMatrix:" << endl;
+	for (int ii = 0; ii < distanceMatrix->size(); ii++)
+	{
+		vector<int>* currentRow = distanceMatrix->at(ii);
+		for (int jj = 0; jj < currentRow->size(); jj++)
+		{
+			cout << currentRow->at(jj) << " ";
+		}
+		
+		cout << endl;
+	}
+
+	return distanceMatrix;
+}
+
+
+vector< vector<int>* >* getConnectedComponents(int numberOfNodes, vector< vector<int>* >* distanceMatrix)
+{
+	vector< vector<int>* >* connectedComponents = new vector< vector<int>* >();
+	vector<bool>* visited = new vector<bool>(5, 0);
+
+	for (int row = 0; row < distanceMatrix->size(); row++)
+	{
+		//if this node has never been explored
+		if (visited->at(row) == 0)
+		{
+			//set node as explored
+			(*visited)[row] = 1;
+
+			//make component vector to keep track of this node and nodes it is connected to
+			vector<int>* currentComponent = new vector<int>();
+			currentComponent->push_back(row);
+
+			//add this component to vector of components
+			connectedComponents->push_back(currentComponent);
+
+
+			vector<int>* currentRow = distanceMatrix->at(row);
+			for(int column = 0; column < currentRow->size(); column++)
+			{
+				//if the row node is connected to the node referenced by this column,
+				// add the column node to the connected component vector. Set the column
+				// node as visited.
+				if( currentRow->at(column) > -1 && column != row)
+				{
+					currentComponent->push_back(column);
+					(*visited)[column] = 1;		
+				}
+			}
+		}
+	}	
+
+
+	//print out components
+        cout << "ConnectedComponentMatrix:" << endl;
+        for (int ii = 0; ii < connectedComponents->size(); ii++)
+        {
+                vector<int>* currentRow = connectedComponents->at(ii);
+                for (int jj = 0; jj < currentRow->size(); jj++)
+                {
+                        cout << currentRow->at(jj) << " ";
+                }
+
+                cout << endl;
+        }
+
+
+	
+	return connectedComponents;
+}
+
+int graphDiameter(vector< vector<int>* >* distanceMatrix)
+{
+	int max = 0;
+
+	//iterate through all the distance pairs and find the largest value.
+	for(int row = 0; row < distanceMatrix->size(); row++)
+	{
+		for (int column = 0; column < distanceMatrix->at(row)->size(); column++)
+		{
+			int currentDistance = distanceMatrix->at(row)->at(column);
+			if(currentDistance > max)
+			{
+				max = currentDistance;
+			}	
+		}
+	}
+	return max;
+}
+
+void  deleteMatrix(vector< vector<int>* >* matrixToDelete)
+{
+        for (int ii = 0; ii < matrixToDelete->size(); ii++)
+        {
+                delete matrixToDelete->at(ii);
+        }
+        delete matrixToDelete;
+}
