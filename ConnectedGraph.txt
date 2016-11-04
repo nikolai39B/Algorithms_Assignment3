@@ -1,0 +1,27 @@
+Number of nodes: 5
+Edge 0: 0 1
+Edge 1: 0 2
+Edge 2: 0 3
+Edge 3: 0 4
+Edge 4: 1 2
+Edge 5: 2 3
+Edge 6: 3 4
+
+Adjacency Matrix:
+ 0  1  1  1  1 
+ 1  0  1  0  0 
+ 1  1  0  1  0 
+ 1  0  1  0  1 
+ 1  0  0  1  0 
+
+Distance Matrix:
+ 0  1  1  1  1 
+ 1  0  1  2  2 
+ 1  1  0  1  2 
+ 1  2  1  0  1 
+ 1  2  2  1  0 
+
+Graph Diameter: 2
+
+ConnectedComponentMatrix:
+0 1 2 3 4 

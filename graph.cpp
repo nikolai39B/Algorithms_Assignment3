@@ -313,7 +313,7 @@ graphMatrix generateDistanceMatrix(graphMatrix adjacencyMatrix)
 vector< vector<int>* >* getConnectedComponents(graphMatrix distanceMatrix)
 {
 	vector< vector<int>* >* connectedComponents = new vector< vector<int>* >();
-	vector<bool>* visited = new vector<bool>(5, 0);
+	vector<bool>* visited = new vector<bool>(distanceMatrix.matrix ->size(), 0);
 
 	for (int row = 0; row < distanceMatrix.matrix ->size(); row++)
 	{
