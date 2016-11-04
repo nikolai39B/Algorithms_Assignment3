@@ -1,0 +1,2 @@
+Number of nodes: 0
+Input Error: Node number 1 is too large. Valid node numbers are 0--1.
