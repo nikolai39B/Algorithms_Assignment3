@@ -348,7 +348,7 @@ vector< vector<int>* >* getConnectedComponents(graphMatrix distanceMatrix)
 
 
 	//print out components
-        cout << "ConnectedComponentMatrix:" << endl;
+        cout << "Connected Components:" << endl;
         for (int ii = 0; ii < connectedComponents->size(); ii++)
         {
                 vector<int>* currentRow = connectedComponents->at(ii);
